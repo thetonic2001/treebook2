@@ -58,16 +58,18 @@ class StatusesController < ApplicationController
   # PUT /statuses/1.json
   def update
     @status = current_user.statuses.find(params[:id])
-    params[:status].delete(:user_id) if params[:status].has_key?(:user_id)
-
-    respond_to do |format|
-      if @status.update_attributes(params[:status])
-        format.html { redirect_to @status, notice: 'Status was successfully updated.' }
-        format.json { head :no_content }
-      else
-        format.html { render action: "edit" }
-        format.json { render json: @status.errors, status: :unprocessable_entity }
-      end
+    if 
+      params[:status] && params[:status].has_key?(:user_id)
+      params[:status].delete(:user_id) 
+    end
+      respond_to do |format|
+        if @status.update_attributes(params[:status])
+          format.html { redirect_to @status, notice: 'Status was successfully updated.' }
+          format.json { head :no_content }
+        else
+          format.html { render action: "edit" }
+          format.json { render json: @status.errors, status: :unprocessable_entity }
+        end
     end
   end
 
